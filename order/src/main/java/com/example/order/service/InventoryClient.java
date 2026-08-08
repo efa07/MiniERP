@@ -14,11 +14,12 @@ public class InventoryClient {
                 .build();
     }
 
-    public String reserveStock(Long productId) {
-        return restClient
-                    .post()
-                    .uri("/api/inventory/{productId}/reserve", productId)
-                    .retrieve()
-                    .body(String.class);
+    public boolean reserveStock(Long productId) {
+        restClient
+                .post()
+                .uri("/api/inventory/{productId}/reserve", productId)
+                .retrieve()
+                .body(String.class);
+        return true;
     }
 }

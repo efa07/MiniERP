@@ -1,5 +1,7 @@
 package com.example.order.controller;
 
+import com.example.order.model.OrderRequest;
+import com.example.order.model.OrderResponse;
 import com.example.order.service.InventoryClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +18,18 @@ public class OrderController {
     }
 
     @PostMapping
-    public String createOrder(
-            @RequestParam Long productId
+    public OrderResponse createOrder(
+            @RequestBody OrderRequest orderRequest
     ) {
 
-        String inventoryResponse =
-                inventoryClient.reserveStock(productId);
+        boolean inventoryReserved =
+                inventoryClient.reserveStock(orderRequest.getProductId());
 
-        return "Order created. " + inventoryResponse;
+        return new OrderResponse(
+                "Order created",
+                orderRequest.getProductId(),
+                orderRequest.getQuantity(),
+                inventoryReserved
+        );
     }
 }

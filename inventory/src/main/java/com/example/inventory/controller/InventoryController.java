@@ -2,6 +2,7 @@ package com.example.inventory.controller;
 
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/api/inventory")
 public class InventoryController {
@@ -11,7 +12,7 @@ public class InventoryController {
             @PathVariable Long productId
     ) {
 
-        return "Product " + productId + " has 100 items in stock";
+        return "{\"productId\": 100, \"quantity\": 100, \"available\": true}";
     }
 
     @PostMapping("/{productId}/reserve")
@@ -21,4 +22,7 @@ public class InventoryController {
 
         return "Stock reserved for product " + productId;
     }
+
+  
+    
 }
