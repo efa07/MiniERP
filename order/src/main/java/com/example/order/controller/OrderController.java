@@ -1,35 +1,30 @@
 package com.example.order.controller;
 
-import com.example.order.model.OrderRequest;
-import com.example.order.model.OrderResponse;
-import com.example.order.service.InventoryClient;
+import com.example.order.messaging.OrderEventPublisher;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    private final InventoryClient inventoryClient;
+    private final OrderEventPublisher publisher;
 
     public OrderController(
-            InventoryClient inventoryClient
+            OrderEventPublisher publisher
     ) {
-        this.inventoryClient = inventoryClient;
+        this.publisher = publisher;
     }
 
     @PostMapping
-    public OrderResponse createOrder(
-            @RequestBody OrderRequest orderRequest
+    public String createOrder(
+            @RequestParam Long productId
     ) {
 
-        boolean inventoryReserved =
-                inventoryClient.reserveStock(orderRequest.getProductId());
+        String message =
+                "Order created for product " + productId;
 
-        return new OrderResponse(
-                "Order created",
-                orderRequest.getProductId(),
-                orderRequest.getQuantity(),
-                inventoryReserved
-        );
+        publisher.publishOrderCreated(message);
+
+        return message;
     }
 }

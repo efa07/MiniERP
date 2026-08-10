@@ -29,16 +29,6 @@ public class RabbitMQConfig {
         admin.setAutoStartup(true);
         return admin;
     }
-
-    /**
-     * Forces RabbitAdmin to declare all exchanges/queues/bindings on startup.
-     *
-     * RabbitAdmin only auto-declares resources when a connection event fires
-     * (e.g. triggered by a listener container). In a producer-only service
-     * there are no listener containers, so no connection is opened at startup
-     * and the exchange/queue are never created. Calling initialize() here
-     * opens the connection eagerly and performs all declarations.
-     */
     @Bean
     public ApplicationListener<ApplicationReadyEvent> rabbitInitializer(RabbitAdmin rabbitAdmin) {
         return event -> rabbitAdmin.initialize();
