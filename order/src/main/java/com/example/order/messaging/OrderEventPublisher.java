@@ -1,6 +1,7 @@
 package com.example.order.messaging;
 
 import com.example.order.config.RabbitMQConfig;
+import com.example.order.event.OrderCreatedEvent;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +17,13 @@ public class OrderEventPublisher {
     }
 
     public void publishOrderCreated(
-            String message
+            OrderCreatedEvent event
     ) {
 
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.EXCHANGE,
                 RabbitMQConfig.ORDER_CREATED_ROUTING_KEY,
-                message
+                event
         );
     }
 }

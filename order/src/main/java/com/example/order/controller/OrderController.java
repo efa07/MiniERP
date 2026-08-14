@@ -1,30 +1,34 @@
 package com.example.order.controller;
 
-import com.example.order.messaging.OrderEventPublisher;
+import com.example.order.event.OrderCreatedEvent;
+import com.example.order.service.OrderService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    private final OrderEventPublisher publisher;
+    private final OrderService orderService;
 
     public OrderController(
-            OrderEventPublisher publisher
+            OrderService orderService
     ) {
-        this.publisher = publisher;
+        this.orderService = orderService;
     }
 
     @PostMapping
-    public String createOrder(
-            @RequestParam Long productId
+    public ResponseEntity<OrderCreatedEvent> createOrder(
+            @RequestParam Long productId,
+            @RequestParam Integer quantity
     ) {
 
-        String message =
-                "Order created for product " + productId;
+        OrderCreatedEvent event =
+                orderService.createOrder(
+                        productId,
+                        quantity
+                );
 
-        publisher.publishOrderCreated(message);
-
-        return message;
+        return ResponseEntity.ok(event);
     }
 }
