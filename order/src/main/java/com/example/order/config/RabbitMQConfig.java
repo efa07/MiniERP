@@ -4,54 +4,40 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String EXCHANGE_NAME =
+    public static final String EXCHANGE =
             "erp.exchange";
 
-    public static final String QUEUE_NAME =
-            "order.queue";
+    public static final String ORDER_QUEUE =
+            "order.created.queue";
 
-    public static final String ROUTING_KEY =
+    public static final String ORDER_CREATED_ROUTING_KEY =
             "order.created";
 
     @Bean
-    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
-        RabbitAdmin admin = new RabbitAdmin(connectionFactory);
-        admin.setAutoStartup(true);
-        return admin;
-    }
-    @Bean
-    public ApplicationListener<ApplicationReadyEvent> rabbitInitializer(RabbitAdmin rabbitAdmin) {
-        return event -> rabbitAdmin.initialize();
+    public DirectExchange erpExchange() {
+        return new DirectExchange(EXCHANGE);
     }
 
     @Bean
-    public DirectExchange exchange() {
-        return new DirectExchange(EXCHANGE_NAME);
+    public Queue orderCreatedQueue() {
+        return new Queue(ORDER_QUEUE);
     }
 
     @Bean
-    public Queue queue() {
-        return new Queue(QUEUE_NAME);
-    }
-
-    @Bean
-    public Binding binding(
-            Queue queue,
-            DirectExchange exchange
+    public Binding orderCreatedBinding(
+            Queue orderCreatedQueue,
+            DirectExchange erpExchange
     ) {
+
         return BindingBuilder
-                .bind(queue)
-                .to(exchange)
-                .with(ROUTING_KEY);
+                .bind(orderCreatedQueue)
+                .to(erpExchange)
+                .with(ORDER_CREATED_ROUTING_KEY);
     }
 }

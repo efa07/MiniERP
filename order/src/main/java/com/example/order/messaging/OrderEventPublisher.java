@@ -20,8 +20,8 @@ public class OrderEventPublisher {
     ) {
 
         rabbitTemplate.convertAndSend(
-                RabbitMQConfig.EXCHANGE_NAME,
-                RabbitMQConfig.ROUTING_KEY,
+                RabbitMQConfig.EXCHANGE,
+                RabbitMQConfig.ORDER_CREATED_ROUTING_KEY,
                 message
         );
     }

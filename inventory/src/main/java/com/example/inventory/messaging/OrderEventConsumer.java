@@ -13,4 +13,5 @@ public class OrderEventConsumer {
                 "Received order event: " + message
         );
     }
+
 }
